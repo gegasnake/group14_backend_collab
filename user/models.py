@@ -12,7 +12,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
     photo = models.ImageField(null=True, blank=True)
-    rating = models.IntegerField(null=True, blank=True)
+    rating = models.IntegerField(default=0)
 
     objects = CustomUserManager()
 
