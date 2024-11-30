@@ -73,6 +73,8 @@ TEMPLATES = [
     },
 ]
 
+AUTH_USER_MODEL = 'user.CustomUser'
+
 WSGI_APPLICATION = 'cfcollab.wsgi.application'
 
 
