@@ -1,4 +1,3 @@
-
 from django.contrib.auth.password_validation import validate_password
 from .models import CustomUser
 from rest_framework import serializers
@@ -12,7 +11,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['email', 'fullname', 'password']
+        fields = ('email', 'fullname', 'password')
 
     def create(self, validated_data):
         user = CustomUser.objects.create_user(**validated_data)
@@ -20,6 +19,16 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    questions = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    answers = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
     class Meta:
         model = CustomUser
-        fields = ['id', 'fullname', 'email', 'rating']
+        fields = ('id', 'fullname', 'email', 'rating', 'questions', 'answers')
+
+
+class UserLeaderBordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('id',)
+
