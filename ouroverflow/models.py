@@ -21,6 +21,7 @@ class Question(models.Model):
     tags = models.ManyToManyField(Tag, related_name="questions")
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="questions")
     created_at = models.DateTimeField(auto_now_add=True)
+    has_correct_answer = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
@@ -28,20 +29,26 @@ class Question(models.Model):
 
 class Answer(models.Model):
     """
-    Model to represent an answer to a question.
+    Answer model.
     """
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="answers")
     text = models.TextField()
-    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="answers")
-    likes = models.ManyToManyField(CustomUser, related_name="liked_answers", blank=True)
+    question = models.ForeignKey(
+        Question,
+        on_delete=models.CASCADE,
+        related_name="answers"
+    )
+    author = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="answers"
+    )
     is_correct = models.BooleanField(default=False)
+    likes = models.ManyToManyField(
+        CustomUser,
+        related_name="liked_answers",
+        blank=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def like_count(self):
-        """
-        Returns the total number of likes for this answer.
-        """
-        return self.likes.count()
-
     def __str__(self):
-        return f"Answer to '{self.question.title}' by {self.author.fullname}"
+        return f"Answer to {self.question.title} by {self.author.email}"

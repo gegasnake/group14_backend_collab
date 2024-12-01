@@ -3,13 +3,17 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import CustomUser
-from .serializers import RegisterUserSerializer, UserSerializer, UserLeaderBordSerializer
+from .serializers import RegisterUserSerializer, UserSerializer, UserLeaderBoardSerializer
+from rest_framework.exceptions import ValidationError
 
-
-# Create your views here.
 
 class RegisterPage(CreateAPIView):
     serializer_class = RegisterUserSerializer
+
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        response.data['message'] = "Registration successful!"
+        return response
 
 
 class UserProfilePage(GenericAPIView):
@@ -24,4 +28,4 @@ class UserProfilePage(GenericAPIView):
 
 class UserLeaderBoard(ListAPIView):
     queryset = CustomUser.objects.filter(rating__gt=0).order_by('-rating')
-    serializer_class = UserLeaderBordSerializer
+    serializer_class = UserLeaderBoardSerializer
