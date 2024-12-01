@@ -4,7 +4,7 @@ from .views import (
     QuestionDetailView,
     AnswerListCreateView,
     LikeAnswerView,
-    CorrectAnswerView, TagListCreateView,
+    CorrectAnswerView, TagListView,
 )
 
 urlpatterns = [
@@ -21,5 +21,5 @@ urlpatterns = [
     # Mark correct answer
     path('answers/<int:answer_id>/correct', CorrectAnswerView.as_view(), name='mark-correct-answer'),
 
-    path('tags/', TagListCreateView.as_view(), name='tag-list-create'),
+    path('tags/', TagListView.as_view(), name='tag-list-create'),
 ]

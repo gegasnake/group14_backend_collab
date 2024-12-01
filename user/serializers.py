@@ -4,24 +4,16 @@ from rest_framework import serializers
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(
-        write_only=True,
-        required=True,
-        validators=[validate_password],
-    )
-    confirm_password = serializers.CharField(write_only=True, required=True)
+    password = serializers.CharField(write_only=True,
+                                     required=True,
+                                     validators=[validate_password],
+                                     )
 
     class Meta:
         model = CustomUser
-        fields = ('email', 'fullname', 'password', 'confirm_password')
-
-    def validate(self, attrs):
-        if attrs['password'] != attrs['confirm_password']:
-            raise serializers.ValidationError({"password": "Passwords do not match."})
-        return attrs
+        fields = ['email', 'fullname', 'password']
 
     def create(self, validated_data):
-        validated_data.pop('confirm_password')  # Remove confirm_password as it's not needed in user creation
         user = CustomUser.objects.create_user(**validated_data)
         return user
 

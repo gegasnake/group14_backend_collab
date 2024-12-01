@@ -4,7 +4,6 @@ from rest_framework.response import Response
 
 from .models import CustomUser
 from .serializers import RegisterUserSerializer, UserSerializer, UserLeaderBoardSerializer
-from rest_framework.exceptions import ValidationError
 
 
 class RegisterPage(CreateAPIView):

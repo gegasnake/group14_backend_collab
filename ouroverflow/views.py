@@ -2,7 +2,7 @@ from django.db.models import Count, Q
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, get_object_or_404
+from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, get_object_or_404, ListAPIView
 
 from .models import Question, Answer, Tag
 from .serializers import QuestionSerializer, AnswerSerializer, QuestionDetailSerializer, TagSerializer, \
@@ -116,9 +116,9 @@ class CorrectAnswerView(APIView):
             return Response({"message": "Marked as correct answer.", "answer_id": answer.id}, status=200)
 
 
-class TagListCreateView(ListCreateAPIView):
+class TagListView(ListAPIView):
     """
-    View to list all tags or create a new tag.
+    View to list all tags.
     """
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
