@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Question, Answer, Tag
-from user.serializers import UserSerializer
+from user.models import CustomUser
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -18,10 +18,17 @@ class AnswerSerializer(serializers.ModelSerializer):
     Serializer for Answer model.
     """
     likes_count = serializers.IntegerField(source="likes.count", read_only=True)
+    is_correct = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Answer
-        fields = ['id', 'text', 'likes_count']
+        fields = ['id', 'text', 'likes_count', 'is_correct']
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('id', 'fullname', 'email', 'rating')
 
 
 class QuestionSerializer(serializers.ModelSerializer):
@@ -97,4 +104,3 @@ class LikeAnswerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Answer
         fields = ['id']  # Example fields for the serializer
-
