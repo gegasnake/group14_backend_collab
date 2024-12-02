@@ -65,9 +65,29 @@ class ListQuestionSerializer(serializers.ModelSerializer):
 
 
 class CreateQuestionSerializer(serializers.ModelSerializer):
+    tags = serializers.ListField(
+        child=serializers.CharField(),  # Each item in the list is a string (tag name)
+    )
+
     class Meta:
         model = Question
         fields = ('title', 'description', 'tags')
+
+    def validate_tags(self, value):
+        """
+        Validate and convert list of tag names to Tag instances.
+        """
+        tags = []
+        for tag_name in value:
+            tag, created = Tag.objects.get_or_create(name=tag_name)
+            tags.append(tag)
+        return tags
+
+    def create(self, validated_data):
+        tags = validated_data.pop('tags', [])
+        question = super().create(validated_data)
+        question.tags.set(tags)  # Associate tags with the Question instance
+        return question
 
 
 class QuestionDetailSerializer(serializers.ModelSerializer):
