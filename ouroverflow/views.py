@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView, RetrieveAPIView, get_object_or_404, ListAPIView
 
 from .models import Question, Answer, Tag
-from .serializers import ListQuestionSerializer, AnswerSerializer, QuestionDetailSerializer, TagSerializer, \
-    CorrectAnswerSerializer, LikeAnswerSerializer, CreateQuestionSerializer
+from .serializers import QuestionSerializer, AnswerSerializer, QuestionDetailSerializer, TagSerializer, \
+    CorrectAnswerSerializer, LikeAnswerSerializer
 from .permissions import ReadOnlyOrIsAuthenticated, IsQuestionAuthor
 
 
@@ -14,7 +14,7 @@ class QuestionListCreateView(ListCreateAPIView):
     """
     View to list all questions or create a new question.
     """
-    # serializer_class = QuestionSerializer
+    serializer_class = QuestionSerializer
     queryset = Question.objects.all().order_by('-created_at')
     permission_classes = [ReadOnlyOrIsAuthenticated]
 
@@ -36,11 +36,6 @@ class QuestionListCreateView(ListCreateAPIView):
             answer_count=Count('answers'),
             correct_answer_count=Count('answers', filter=Q(answers__is_correct=True))  # Renamed annotation
         )
-
-    def get_serializer_class(self):
-        if self.request.method == 'POST':
-            return CreateQuestionSerializer
-        return ListQuestionSerializer
 
     def perform_create(self, serializer):
         # Save the question with the current user as the author

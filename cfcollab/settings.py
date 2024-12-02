@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -146,3 +146,17 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),  # Set to 24 hours
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),   # Set to 7 days
+    'ROTATE_REFRESH_TOKENS': False,               # Optional: Refresh rotation behavior
+    'BLACKLIST_AFTER_ROTATION': True,             # Optional: Blacklist behavior
+    'ALGORITHM': 'HS256',                         # Algorithm used for signing
+    'SIGNING_KEY': SECRET_KEY,                    # Default secret key
+    'VERIFYING_KEY': None,
+    'AUTH_HEADER_TYPES': ('Bearer',),             # Authorization header prefix
+    'USER_ID_FIELD': 'id',                        # User model field for identification
+    'USER_ID_CLAIM': 'user_id',                   # JWT claim for user ID
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+}
