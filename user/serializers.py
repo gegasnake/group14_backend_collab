@@ -1,7 +1,7 @@
 from django.contrib.auth.password_validation import validate_password
 from .models import CustomUser
 from rest_framework import serializers
-from ouroverflow.serializers import QuestionSerializer, AnswerSerializer
+from ouroverflow.serializers import ListQuestionSerializer, AnswerSerializer
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
@@ -20,7 +20,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    questions = QuestionSerializer(many=True)
+    questions = ListQuestionSerializer(many=True)
     answers = AnswerSerializer(many=True)
 
     class Meta:

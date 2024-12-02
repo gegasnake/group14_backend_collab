@@ -31,7 +31,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'fullname', 'email', 'rating')
 
 
-class QuestionSerializer(serializers.ModelSerializer):
+class ListQuestionSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
     answers_count = serializers.IntegerField(read_only=True)
     tags = TagSerializer(many=True)
@@ -44,38 +44,30 @@ class QuestionSerializer(serializers.ModelSerializer):
     def get_has_correct_answer(self, obj):
         return obj.has_correct_answer > 0
 
-    def create(self, validated_data):
-        # Extract tags data
-        tags_data = validated_data.pop('tags')
+    # def update(self, instance, validated_data):
+    #     # Extract tags data
+    #     tags_data = validated_data.pop('tags', None)
+    #
+    #     # Update the Question instance
+    #     instance.title = validated_data.get('title', instance.title)
+    #     instance.description = validated_data.get('description', instance.description)
+    #     instance.save()
+    #
+    #     # Update tags (add new tags and remove unassigned ones)
+    #     if tags_data is not None:
+    #         # Clear the existing tags
+    #         instance.tags.clear()
+    #         for tag_data in tags_data:
+    #             tag, created = Tag.objects.get_or_create(name=tag_data['name'])
+    #             instance.tags.add(tag)
+    #
+    #     return instance
 
-        # Create the Question instance
-        question = Question.objects.create(**validated_data)
 
-        # Create Tag instances and associate them with the Question
-        for tag_data in tags_data:
-            tag, created = Tag.objects.get_or_create(name=tag_data['name'])
-            question.tags.add(tag)
-
-        return question
-
-    def update(self, instance, validated_data):
-        # Extract tags data
-        tags_data = validated_data.pop('tags', None)
-
-        # Update the Question instance
-        instance.title = validated_data.get('title', instance.title)
-        instance.description = validated_data.get('description', instance.description)
-        instance.save()
-
-        # Update tags (add new tags and remove unassigned ones)
-        if tags_data is not None:
-            # Clear the existing tags
-            instance.tags.clear()
-            for tag_data in tags_data:
-                tag, created = Tag.objects.get_or_create(name=tag_data['name'])
-                instance.tags.add(tag)
-
-        return instance
+class CreateQuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = ('title', 'description', 'tags')
 
 
 class QuestionDetailSerializer(serializers.ModelSerializer):
