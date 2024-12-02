@@ -122,4 +122,3 @@ class TagListView(ListAPIView):
     """
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = [IsAuthenticated]
