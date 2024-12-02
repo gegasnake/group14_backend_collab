@@ -20,7 +20,7 @@ class UserProfilePage(GenericAPIView):
     serializer_class = UserSerializer
 
     def get(self, request, *args, **kwargs):
-        user = request.user
+        user = CustomUser.objects.prefetch_related('questions', 'answers').get(id=request.user.id)
         serializers = self.serializer_class(instance=user)
         return Response(serializers.data)
 
