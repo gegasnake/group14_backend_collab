@@ -24,7 +24,7 @@ class QuestionListCreateView(ListCreateAPIView):
         # Filter by tags if provided
         tags = self.request.query_params.getlist('tags', [])
         if tags:
-            queryset = queryset.filter(tags__overlap=tags)
+            queryset = queryset.filter(tags__slug__in=tags)
 
         # Search functionality
         search = self.request.query_params.get('search', '')

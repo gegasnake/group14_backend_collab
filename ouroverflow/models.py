@@ -1,4 +1,5 @@
 from django.db import models
+from django.template.defaultfilters import slugify
 from user.models import CustomUser
 
 
@@ -7,6 +8,11 @@ class Tag(models.Model):
     Model to store tags, which can be used to classify questions.
     """
     name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name

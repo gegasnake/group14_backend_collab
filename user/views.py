@@ -1,4 +1,4 @@
-from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView
+from rest_framework.generics import CreateAPIView, GenericAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -13,6 +13,12 @@ class RegisterPage(CreateAPIView):
         response = super().create(request, *args, **kwargs)
         response.data['message'] = "Registration successful!"
         return response
+
+
+class SpecificUserPage(RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+    queryset = CustomUser.objects.prefetch_related('questions', 'answers').all()
 
 
 class UserProfilePage(GenericAPIView):

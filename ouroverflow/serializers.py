@@ -6,11 +6,7 @@ from user.models import CustomUser
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ['id', 'name']
-
-    def validate_name(self, value):
-        # Example: Ensure tag name is lowercase
-        return value.lower()
+        fields = ['id', 'name', 'slug']
 
 
 class AnswerSerializer(serializers.ModelSerializer):
