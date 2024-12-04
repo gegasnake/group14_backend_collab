@@ -138,6 +138,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # React local server
     "https://example-react.com",  # React production server
     "https://example-ios.com",  # iOS app domain
+    "http://167.99.138.11:80",
+    "http://167.99.138.11:3000",
+    "http://167.99.138.11:8080"
 ]
 
 
