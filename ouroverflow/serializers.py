@@ -9,22 +9,23 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'slug']
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ('id', 'fullname', 'email', 'rating')
+
+
 class AnswerSerializer(serializers.ModelSerializer):
     """
     Serializer for Answer model.
     """
     likes_count = serializers.IntegerField(source="likes.count", read_only=True)
     is_correct = serializers.BooleanField(read_only=True)
+    author = UserSerializer(read_only=True)
 
     class Meta:
         model = Answer
-        fields = ['id', 'text', 'likes_count', 'is_correct']
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ('id', 'fullname', 'email', 'rating')
+        fields = ['id', 'text', 'likes_count', 'is_correct', 'author']
 
 
 class QuestionSerializer(serializers.ModelSerializer):
@@ -73,7 +74,6 @@ class QuestionSerializer(serializers.ModelSerializer):
         question = Question.objects.create(**validated_data)
         question.tags.set(existing_tags)  # Assign the fetched tags
         return question
-
 
     # def update(self, instance, validated_data):
     #     # Extract tags data
