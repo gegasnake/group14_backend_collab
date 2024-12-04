@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .models import CustomUser
-from .serializers import RegisterUserSerializer, UserSerializer, UserLeaderBoardSerializer
+from .serializers import RegisterUserSerializer, UserProfileSerializer
 
 
 class RegisterPage(CreateAPIView):
@@ -16,14 +16,13 @@ class RegisterPage(CreateAPIView):
 
 
 class SpecificUserPage(RetrieveAPIView):
-    permission_classes = [IsAuthenticated]
-    serializer_class = UserSerializer
+    serializer_class = UserProfileSerializer
     queryset = CustomUser.objects.prefetch_related('questions', 'answers').all()
 
 
 class UserProfilePage(GenericAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = UserSerializer
+    serializer_class = UserProfileSerializer
 
     def get(self, request, *args, **kwargs):
         user = CustomUser.objects.prefetch_related('questions', 'answers').get(id=request.user.id)
@@ -33,4 +32,4 @@ class UserProfilePage(GenericAPIView):
 
 class UserLeaderBoard(ListAPIView):
     queryset = CustomUser.objects.filter(rating__gt=0).order_by('-rating')
-    serializer_class = UserLeaderBoardSerializer
+    serializer_class = UserProfileSerializer

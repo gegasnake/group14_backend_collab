@@ -106,13 +106,31 @@ class CorrectAnswerView(APIView):
         if answer.is_correct:
             # Unmark as correct
             answer.is_correct = False
-            answer.save()
+            answer_author = answer.author
+            answer_author.rating -= 10
+            answer_author.save(update_fields=['rating'])
+            answer.save(update_fields=['is_correct'])
             return Response({"message": "Correct answer unmarked.", "answer_id": answer.id}, status=200)
         else:
-            # Mark as correct and unmark others
-            Answer.objects.filter(question=answer.question).update(is_correct=False)
-            answer.is_correct = True
-            answer.save()
+            is_marked_correct = Answer.objects.filter(question=answer.question, is_correct=True)
+            if is_marked_correct:
+                past_correct_answer_author = is_marked_correct.first().author
+                past_correct_answer_author.rating -= 10
+                past_correct_answer_author.save(update_fields=['rating'])
+
+                # Mark as correct and unmark others
+                Answer.objects.filter(question=answer.question).update(is_correct=False)
+                answer.is_correct = True
+                answer.save(update_fields=['is_correct'])
+                answer_author = answer.author
+                answer_author.rating += 10
+                answer_author.save(update_fields=['rating'])
+            else:
+                answer.is_correct = True
+                answer.save(update_fields=['is_correct'])
+                answer_author = answer.author
+                answer_author.rating += 10
+                answer_author.save(update_fields=['rating'])
             return Response({"message": "Marked as correct answer.", "answer_id": answer.id}, status=200)
 
 

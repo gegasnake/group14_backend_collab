@@ -19,7 +19,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         return user
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserProfileSerializer(serializers.ModelSerializer):
     questions = QuestionSerializer(many=True)
     answers = AnswerSerializer(many=True)
 
@@ -27,8 +27,3 @@ class UserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ('id', 'fullname', 'email', 'rating', 'questions', 'answers')
 
-
-class UserLeaderBoardSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = ('id', 'fullname', 'rating')

@@ -29,7 +29,10 @@ class UserSerializer(serializers.ModelSerializer):
 
 class QuestionSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
-    answers_count = serializers.IntegerField(read_only=True)
+    answers = AnswerSerializer(
+        many=True, read_only=True,
+    )
+    answers_count = serializers.SerializerMethodField(read_only=True)
     tags = serializers.ListField(
         child=serializers.CharField(max_length=100),
         write_only=True  # Used only when writing (creating/updating)
@@ -41,7 +44,7 @@ class QuestionSerializer(serializers.ModelSerializer):
         model = Question
         fields = [
             'id', 'title', 'description', 'tags', 'tag_names',
-            'author', 'answers_count', 'created_at', 'has_correct_answer'
+            'author', 'answers', 'answers_count', 'created_at', 'has_correct_answer'
         ]
         extra_kwargs = {'tags': {'write_only': True}}  # Ensure tags are write-only
 
@@ -51,6 +54,9 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     def get_has_correct_answer(self, obj):
         return obj.has_correct_answer > 0
+
+    def get_answers_count(self, obj):
+        return obj.answers.all().count()
 
     def create(self, validated_data):
         tags_data = validated_data.pop('tags', [])
@@ -94,7 +100,7 @@ class QuestionDetailSerializer(serializers.ModelSerializer):
     tags = serializers.SlugRelatedField(
         many=True, read_only=True, slug_field='name'
     )
-    answers = serializers.PrimaryKeyRelatedField(
+    answers = AnswerSerializer(
         many=True, read_only=True,
     )
 
