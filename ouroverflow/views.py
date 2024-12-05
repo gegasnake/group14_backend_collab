@@ -24,7 +24,11 @@ class QuestionListCreateView(ListCreateAPIView):
         # Filter by tags if provided
         tags = self.request.query_params.getlist('tags', [])
         if tags:
-            queryset = queryset.filter(tags__slug__in=tags)
+            queryset = queryset.annotate(
+                matching_tags_count=Count('tags', filter=Q(tags__slug__in=tags))
+            ).filter(
+                matching_tags_count=len(tags)
+            )
 
         # Search functionality
         search = self.request.query_params.get('search', '')
