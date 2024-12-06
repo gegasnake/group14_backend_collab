@@ -31,5 +31,5 @@ class UserProfilePage(GenericAPIView):
 
 
 class UserLeaderBoard(ListAPIView):
-    queryset = CustomUser.objects.filter(rating__gt=0).order_by('-rating')
+    queryset = CustomUser.objects.prefetch_related('questions', 'answers').filter(rating__gt=0).order_by('-rating')
     serializer_class = UserProfileSerializer

@@ -22,10 +22,14 @@ class AnswerSerializer(serializers.ModelSerializer):
     likes_count = serializers.IntegerField(source="likes.count", read_only=True)
     is_correct = serializers.BooleanField(read_only=True)
     author = UserSerializer(read_only=True)
+    authors_of_likes = serializers.SerializerMethodField()
 
     class Meta:
         model = Answer
-        fields = ['id', 'text', 'likes_count', 'is_correct', 'author']
+        fields = ['id', 'text', 'likes_count', 'authors_of_likes', 'is_correct', 'author', 'question_id']
+
+    def get_authors_of_likes(self, obj):
+        return [author.id for author in obj.likes.all()]
 
 
 class QuestionSerializer(serializers.ModelSerializer):
@@ -74,25 +78,6 @@ class QuestionSerializer(serializers.ModelSerializer):
         question = Question.objects.create(**validated_data)
         question.tags.set(existing_tags)  # Assign the fetched tags
         return question
-
-    # def update(self, instance, validated_data):
-    #     # Extract tags data
-    #     tags_data = validated_data.pop('tags', None)
-    #
-    #     # Update the Question instance
-    #     instance.title = validated_data.get('title', instance.title)
-    #     instance.description = validated_data.get('description', instance.description)
-    #     instance.save()
-    #
-    #     # Update tags (add new tags and remove unassigned ones)
-    #     if tags_data is not None:
-    #         # Clear the existing tags
-    #         instance.tags.clear()
-    #         for tag_data in tags_data:
-    #             tag, created = Tag.objects.get_or_create(name=tag_data['name'])
-    #             instance.tags.add(tag)
-    #
-    #     return instance
 
 
 class QuestionDetailSerializer(serializers.ModelSerializer):

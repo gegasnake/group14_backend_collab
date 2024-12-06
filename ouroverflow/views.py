@@ -15,7 +15,7 @@ class QuestionListCreateView(ListCreateAPIView):
     View to list all questions or create a new question.
     """
     serializer_class = QuestionSerializer
-    queryset = Question.objects.all().order_by('created_at')
+    queryset = Question.objects.all().order_by('-created_at')
     permission_classes = [ReadOnlyOrIsAuthenticated]
 
     def get_queryset(self):
