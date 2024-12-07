@@ -58,7 +58,8 @@ class QuestionSerializer(serializers.ModelSerializer):
         return obj.tags.values_list('name', flat=True)
 
     def get_has_correct_answer(self, obj):
-        return obj.has_correct_answer > 0
+        has_correct_answer = [answer for answer in obj.answers.all() if answer.is_correct == True]
+        return bool(has_correct_answer)
 
     def get_answers_count(self, obj):
         return obj.answers.all().count()
